@@ -1,4 +1,5 @@
 from typing import List, Dict, Any, Set
+import requests
 import logging
 from bs4 import BeautifulSoup
 from ..core.session import session_manager
@@ -12,18 +13,26 @@ class TactAPI:
         self.session_manager = session_manager
 
     def _get(self, endpoint: str) -> Dict[str, Any]:
-        session = self.session_manager.get_session()
-        url = f"{self.BASE_URL}{endpoint}"
-        response = session.get(url)
-        response.raise_for_status()
-        return response.json()
+        try:
+            session = self.session_manager.get_session()
+            url = f"{self.BASE_URL}{endpoint}"
+            response = session.get(url)
+            response.raise_for_status()
+            return response.json()
+        except requests.exceptions.RequestException as e:
+            logger.error(f"Failed to fetch {endpoint}: {e}", exc_info=True)
+            raise
 
     def _get_text(self, endpoint: str) -> str:
-        session = self.session_manager.get_session()
-        url = f"{self.BASE_URL}{endpoint}"
-        response = session.get(url)
-        response.raise_for_status()
-        return response.text
+        try:
+            session = self.session_manager.get_session()
+            url = f"{self.BASE_URL}{endpoint}"
+            response = session.get(url)
+            response.raise_for_status()
+            return response.text
+        except requests.exceptions.RequestException as e:
+            logger.error(f"Failed to fetch text from {endpoint}: {e}", exc_info=True)
+            raise
 
 
     def get_favorite_site_ids(self) -> Set[str]:

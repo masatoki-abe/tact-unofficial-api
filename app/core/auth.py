@@ -1,3 +1,4 @@
+
 import asyncio
 from playwright.async_api import async_playwright
 from typing import Dict
@@ -51,6 +52,8 @@ class TactAuth:
             return cookie_dict
 
 if __name__ == "__main__":
+    # 簡易テスト用: ログ設定をして実行
+    logging.basicConfig(level=logging.INFO)
     auth = TactAuth(headless=False)
     cookies = asyncio.run(auth.login())
-    print("Captured Cookies:", cookies)
+    logger.info(f"Captured Cookies: {cookies}")

@@ -129,35 +129,47 @@ class TactAPI:
             logger.error(f"Failed to update favorites: {e}", exc_info=True)
             return False
 
-    def add_favorite_site(self, site_id: str) -> bool:
+    def add_favorite_site(self, site_id: str) -> str:
         """
         サイトをお気に入りに追加する。
+        Returns:
+            "added": 追加された
+            "already_favorited": 既に追加済み
+            "failed": 失敗
         """
         try:
             fav_ids = self.get_favorite_site_ids()
             if site_id in fav_ids:
-                return True # 既に登録済み
+                return "already_favorited"
             
             fav_ids.add(site_id)
-            return self._update_favorites(fav_ids)
+            if self._update_favorites(fav_ids):
+                return "added"
+            return "failed"
         except Exception as e:
             logger.error(f"Failed to add favorite site {site_id}: {e}", exc_info=True)
-            return False
+            return "failed"
 
-    def remove_favorite_site(self, site_id: str) -> bool:
+    def remove_favorite_site(self, site_id: str) -> str:
         """
         サイトをお気に入りから削除する。
+        Returns:
+            "removed": 削除された
+            "not_favorited": 元々お気に入りではなかった
+            "failed": 失敗
         """
         try:
             fav_ids = self.get_favorite_site_ids()
             if site_id not in fav_ids:
-                return True # 既に削除済み
+                return "not_favorited"
             
             fav_ids.remove(site_id)
-            return self._update_favorites(fav_ids)
+            if self._update_favorites(fav_ids):
+                return "removed"
+            return "failed"
         except Exception as e:
             logger.error(f"Failed to remove favorite site {site_id}: {e}", exc_info=True)
-            return False
+            return "failed"
 
     def get_sites(self) -> List[Dict[str, Any]]:
         """

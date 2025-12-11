@@ -45,10 +45,14 @@ def add_favorite_site(site_id: str):
     指定されたサイトをお気に入りに追加する。
     """
     try:
-        success = tact_api.add_favorite_site(site_id)
-        if not success:
+        result = tact_api.add_favorite_site(site_id)
+        if result == "failed":
             raise HTTPException(status_code=500, detail="Failed to add favorite site")
-        return {"message": f"Site {site_id} added to favorites"}
+        return {
+            "message": f"Site {site_id} processed",
+            "action": result, 
+            "success": True
+        }
     except HTTPException:
         raise
     except Exception as e:
@@ -61,10 +65,14 @@ def remove_favorite_site(site_id: str):
     指定されたサイトをお気に入りから削除する。
     """
     try:
-        success = tact_api.remove_favorite_site(site_id)
-        if not success:
+        result = tact_api.remove_favorite_site(site_id)
+        if result == "failed":
             raise HTTPException(status_code=500, detail="Failed to remove favorite site")
-        return {"message": f"Site {site_id} removed from favorites"}
+        return {
+            "message": f"Site {site_id} processed",
+            "action": result,
+            "success": True
+        }
     except HTTPException:
         raise
     except Exception as e:

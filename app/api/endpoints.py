@@ -38,3 +38,35 @@ def get_sites():
         # e は単なるprint出力かもしれないが、500エラーを返すようにする
         logger.error(f"Error fetching sites: {e}", exc_info=True)
         raise HTTPException(status_code=500, detail=str(e))
+
+@router.post("/sites/{site_id}/favorite")
+def add_favorite_site(site_id: str):
+    """
+    指定されたサイトをお気に入りに追加する。
+    """
+    try:
+        success = tact_api.add_favorite_site(site_id)
+        if not success:
+            raise HTTPException(status_code=500, detail="Failed to add favorite site")
+        return {"message": f"Site {site_id} added to favorites"}
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error adding favorite site: {e}", exc_info=True)
+        raise HTTPException(status_code=500, detail=str(e))
+
+@router.delete("/sites/{site_id}/favorite")
+def remove_favorite_site(site_id: str):
+    """
+    指定されたサイトをお気に入りから削除する。
+    """
+    try:
+        success = tact_api.remove_favorite_site(site_id)
+        if not success:
+            raise HTTPException(status_code=500, detail="Failed to remove favorite site")
+        return {"message": f"Site {site_id} removed from favorites"}
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error removing favorite site: {e}", exc_info=True)
+        raise HTTPException(status_code=500, detail=str(e))

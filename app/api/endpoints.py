@@ -1,4 +1,7 @@
 from fastapi import APIRouter, HTTPException
+import logging
+
+logger = logging.getLogger(__name__)
 
 from ..services.tact_api import tact_api
 from ..core.session import session_manager
@@ -8,8 +11,8 @@ router = APIRouter()
 @router.post("/auth/login")
 async def login():
     """
-    Playwrightによる認証フローをトリガーします。
-    サーバーサイドでブラウザ（ヘッドレス）を起動します。
+    Playwrightによる認証フローをトリガーする。
+    サーバーサイドでブラウザ（ヘッドレス）を起動する。
     """
     try:
         await session_manager.authenticate(headless=False)
@@ -32,5 +35,5 @@ def get_sites():
         return sites
     except Exception as e:
         # e は単なるprint出力かもしれないが、500エラーを返すようにする
-        print(e)
+        logger.error(f"Error fetching sites: {e}", exc_info=True)
         raise HTTPException(status_code=500, detail=str(e))

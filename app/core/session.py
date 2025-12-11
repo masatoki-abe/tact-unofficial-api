@@ -2,6 +2,9 @@ import requests
 from .auth import TactAuth
 import json
 import os
+import logging
+
+logger = logging.getLogger(__name__)
 
 
 
@@ -24,17 +27,17 @@ class TactSession:
             try:
                 with open(self.COOKIE_FILE, 'r') as f:
                     self.cookies = json.load(f)
-                    print(f"{self.COOKIE_FILE} から {len(self.cookies)} 個のCookieを読み込みました")
+                    logger.info(f"{self.COOKIE_FILE} から {len(self.cookies)} 個のCookieを読み込みました")
             except Exception as e:
-                print(f"Cookieの読み込みに失敗しました: {e}")
+                logger.warning(f"Cookieの読み込みに失敗しました: {e}")
 
     def save_cookies(self):
         try:
             with open(self.COOKIE_FILE, 'w') as f:
                 json.dump(self.cookies, f)
-                print(f"Cookieを {self.COOKIE_FILE} に保存しました")
+                logger.info(f"Cookieを {self.COOKIE_FILE} に保存しました")
         except Exception as e:
-            print(f"Cookieの保存に失敗しました: {e}")
+            logger.error(f"Cookieの保存に失敗しました: {e}")
 
     def get_session(self) -> requests.Session:
         session = requests.Session()

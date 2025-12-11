@@ -1,6 +1,9 @@
 from typing import List, Dict, Any, Set
+import logging
 from bs4 import BeautifulSoup
 from ..core.session import session_manager
+
+logger = logging.getLogger(__name__)
 
 class TactAPI:
     BASE_URL = "https://tact.ac.thers.ac.jp"
@@ -40,7 +43,7 @@ class TactAPI:
                     fav_ids.add(sid)
             return fav_ids
         except Exception as e:
-            print(f"お気に入りの取得エラー: {e}")
+            logger.error(f"お気に入りの取得エラー: {e}", exc_info=True)
             return set()
 
     def get_sites(self) -> List[Dict[str, Any]]:

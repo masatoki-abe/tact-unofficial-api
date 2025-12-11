@@ -1,4 +1,5 @@
 import requests
+from typing import Dict
 from .auth import TactAuth
 import json
 import os

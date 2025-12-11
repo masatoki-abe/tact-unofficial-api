@@ -1,4 +1,5 @@
 from fastapi import APIRouter, HTTPException
+from pydantic import BaseModel
 import logging
 
 logger = logging.getLogger(__name__)
@@ -20,7 +21,7 @@ async def login():
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
-from pydantic import BaseModel
+
 
 class Site(BaseModel):
     id: str

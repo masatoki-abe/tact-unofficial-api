@@ -25,7 +25,7 @@ class TactAPI:
         response.raise_for_status()
         return response.text
 
-    pydoc
+
     def get_favorite_site_ids(self) -> Set[str]:
         """
         ポータルページをスクレイピングしてお気に入りサイトのIDを取得します。
@@ -69,7 +69,7 @@ class TactAPI:
             # プレフィックス + ID で構築する
             site_url = site.get('url')
             if not site_url and site_id:
-                site_url = f"https://tact.ac.thers.ac.jp/portal/site/{site_id}"
+                site_url = f"{self.BASE_URL}/portal/site/{site_id}"
             
             processed_sites.append({
                 "id": site_id,

@@ -122,7 +122,7 @@ class TactAPI:
                 "Referer": f"{self.BASE_URL}/portal"
             }
             
-            self._post(endpoint, data=form_data) # _postにheaders引数がないので追加する必要がある
+            self._post(endpoint, data=form_data, headers=headers)
             
             return True
         except Exception as e:
@@ -177,9 +177,9 @@ class TactAPI:
         Sakai Entity Provider: /direct/site.json を使用する。
         /portal からスクレイピングしたお気に入り状況とマージする。
         """
-        # メモ: /direct/site.json は全てのサイトを返す可能性がある
-        # /direct/site/user.json の方が良い場合もあるが、まずは標準的なものを試す
-        data = self._get("/direct/site.json?_limit=200")
+        # メモ: /direct/site.json はデフォルトで制限（例: 80件）があるため、
+        # 全てのサイトを取得するために _limit パラメータを指定する
+        data = self._get("/direct/site.json?_limit=500")
         all_sites = data.get('site_collection', [])
         
         fav_ids = self.get_favorite_site_ids()

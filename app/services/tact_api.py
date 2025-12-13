@@ -18,6 +18,10 @@ class TactAPI:
             url = f"{self.BASE_URL}{endpoint}"
             response = session.get(url)
             response.raise_for_status()
+
+            # レスポンスからCookieを更新（Sticky Session維持など）
+            self.session_manager.update_cookies(response.cookies)
+
             return response.json()
         except requests.exceptions.RequestException as e:
             logger.error(f"Failed to fetch {endpoint}: {e}", exc_info=True)
@@ -29,6 +33,10 @@ class TactAPI:
             url = f"{self.BASE_URL}{endpoint}"
             response = session.get(url)
             response.raise_for_status()
+
+            # レスポンスからCookieを更新（Sticky Session維持など）
+            self.session_manager.update_cookies(response.cookies)
+
             return response.text
         except requests.exceptions.RequestException as e:
             logger.error(f"Failed to fetch text from {endpoint}: {e}", exc_info=True)

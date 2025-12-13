@@ -22,6 +22,21 @@ async def login():
         raise HTTPException(status_code=500, detail=str(e))
 
 
+@router.post("/auth/refresh")
+async def refresh_session():
+    """
+    セッションを再作成・更新します。
+    ヘッドレスモードで再認証を行い、新しいクッキーを取得して保存します。
+    """
+    try:
+        # ヘッドレスモードでバックグラウンド更新
+        await session_manager.authenticate(headless=True)
+        return {"message": "Session refreshed successfully"}
+    except Exception as e:
+        logger.error(f"Session refresh failed: {e}", exc_info=True)
+        raise HTTPException(status_code=500, detail=str(e))
+
+
 
 class Site(BaseModel):
     id: str

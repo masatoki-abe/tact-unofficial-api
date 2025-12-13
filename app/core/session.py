@@ -48,6 +48,25 @@ class TactSession:
             logger.error(f"Cookieの保存に失敗しました: {e}")
             raise e
 
+    def update_cookies(self, new_cookies: requests.cookies.RequestsCookieJar):
+        """
+        APIレスポンスなどから得られた新しいCookieで内部状態を更新し、ファイルに保存する。
+        特にAWSALBなどのSticky Session用Cookieや、再発行されたJSESSIONIDを維持するために使用。
+        """
+        if not new_cookies:
+            return
+
+        updated = False
+        for name, value in new_cookies.items():
+            if self.cookies.get(name) != value:
+                self.cookies[name] = value
+                updated = True
+                # ログレベルはDEBUG推奨だが、挙動確認のため一時的にINFOにする
+                logger.info(f"Cookie updated: {name}") 
+        
+        if updated:
+            self.save_cookies()
+
     def get_session(self) -> requests.Session:
         session = requests.Session()
         session.headers.update(self.headers)
